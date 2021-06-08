@@ -92,7 +92,7 @@ function run(){
 				}
 				
 				var balHuman = Math.round( bal / 100000000 *100 ) /100;
-				var commitHuman = Math.round( commit / 100000000 *100 ) /100;
+				var commitHuman = Math.round( commitment / 100000000 *100 ) /100;
 				var diff = Math.round((balHuman-commitHuman) *100 ) /100;
 				console.log( ` > ${balHuman} Signa (${commitHuman} committed | ${diff} available)\n`);
 				
