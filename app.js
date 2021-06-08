@@ -1,11 +1,11 @@
-console.log("\nCommitmentBot loading.\n");
+console.log("\nCommitBot loading.\n");
 //==========================================================================================================================================================
 //==========================================================================================================================================================
 //==========================================================================================================================================================
 
 
 var account = 'S-XXXX-XXXX-XXXX-XXXXX'; //Burst-Signa RSAddress to monitor.
-var passphrase = 'your twelve words here'; //The passphrase for your Burst-Signa Address in order to broadcast the commitments. 
+var passphrase = 'your twelve words here'; //The passphrase for your Burst-Signa Address in order to broadcast the commits. 
 
 var commitLevel = 10; //Commit coins when this many are available.
 var commitAmount = 100; //How much of the available balance to commit as a percentage (0 - 100)
@@ -25,19 +25,19 @@ var feeMult = 1.05; //Multiplier for the network suggested fees.
 
 
 const http = require('http')
-const ver = '0.0.1';
+const ver = '1.0.0';
 const req_account = {
 	hostname: burstNode,
 	port: burstNodePort,
 	path: `/burst?requestType=getAccount&account=${account}&getCommittedAmount=true`,
-	headers: { 'User-Agent': `CommitmentBot ${ver}` },
+	headers: { 'User-Agent': `CommitBot ${ver}` },
 	method: 'GET'
 }
 const req_fees = {
 	hostname: burstNode,
 	port: burstNodePort,
 	path: `/burst?requestType=suggestFee`,
-	headers: { 'User-Agent': `CommitmentBot ${ver}` },
+	headers: { 'User-Agent': `CommitBot ${ver}` },
 	method: 'GET'
 }
 
@@ -85,23 +85,23 @@ function run(){
 				var data = JSON.parse(d);
 				
 				var bal = data["guaranteedBalanceNQT"];
-				var commitment = data["committedBalanceNQT"];
-				if(typeof bal == "undefined" || typeof commitment == "undefined"){
+				var commit = data["committedBalanceNQT"];
+				if(typeof bal == "undefined" || typeof commit == "undefined"){
 					console.error("API Returned unexpected data: " + d);
 					return;
 				}
 				
 				var balHuman = Math.round( bal / 100000000 *100 ) /100;
-				var commitmentHuman = Math.round( commitment / 100000000 *100 ) /100;
-				var diff = Math.round((balHuman-commitmentHuman) *100 ) /100;
-				console.log( ` > ${balHuman} Signa (${commitmentHuman} committed | ${diff} available)\n`);
+				var commitHuman = Math.round( commit / 100000000 *100 ) /100;
+				var diff = Math.round((balHuman-commitHuman) *100 ) /100;
+				console.log( ` > ${balHuman} Signa (${commitHuman} committed | ${diff} available)\n`);
 				
 				//Check for unconfirmed Commits
 				const req_unconfirmed = {
 					hostname: burstNode,
 					port: burstNodePort,
 					path: encodeURI(`/burst?requestType=getUnconfirmedTransactions&account=${account}`),
-					headers: { 'User-Agent': `CommitmentBot ${ver}` },
+					headers: { 'User-Agent': `CommitBot ${ver}` },
 					method: 'GET'
 				}
 				
@@ -124,9 +124,9 @@ function run(){
 								}
 								
 								//If available balance (Minus unconfirmed commits) is over the checkLevel then begin the commit process
-								if((bal - commitment - unconfirmed) > (commitLevel * 100000000)){
-									commit(bal - commitment - unconfirmed, Math.round((bal - commitment - unconfirmed) / 100000000 *100 ) /100 );
-								}else if( (bal - commitment) > (commitLevel * 100000000) ){
+								if((bal - commit - unconfirmed) > (commitLevel * 100000000)){
+									commit(bal - commit - unconfirmed, Math.round((bal - commit - unconfirmed) / 100000000 *100 ) /100 );
+								}else if( (bal - commit) > (commitLevel * 100000000) ){
 									let uTransactionsHuman = Math.floor(unconfirmed/100000000);
 									console.log(`Skipping commit as there are unconfirmed commits of ~${uTransactionsHuman} Signa\n`);
 								}
@@ -215,14 +215,14 @@ function sendCommit(toCommit, fee){
 	const req_commit = {
 		hostname: burstNode,
 		port: burstNodePort,
-		path: encodeURI(`/burst?requestType=addCommitment&amountNQT=${toCommit}&secretPhrase=${passphrase}&feeNQT=${fee}&deadline=1440`),
-		headers: { 'User-Agent': `CommitmentBot ${ver}` },
+		path: encodeURI(`/burst?requestType=addCommit&amountNQT=${toCommit}&secretPhrase=${passphrase}&feeNQT=${fee}&deadline=1440`),
+		headers: { 'User-Agent': `CommitBot ${ver}` },
 		method: 'POST'
 	}
 
 	//Build the POST body anyway for future-proofing
 	var postData = JSON.stringify({
-		"requestType": "addCommitment",
+		"requestType": "addCommit",
 		"amountNQT": toCommit,
 		"secretPhrase": passphrase,
 		"feeNQT": fee,
@@ -272,7 +272,7 @@ function sendCommit(toCommit, fee){
 
 
 //Display config settings on startup.
-console.log(`CommitmentBot ${ver} Running!
+console.log(`CommitBot ${ver} Running!
 - Checking every ${checkSeconds}s
 - Committing when ${commitLevel} Signa available
 - Committing ${commitAmount}% of available balance.
