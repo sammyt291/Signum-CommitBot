@@ -85,7 +85,7 @@ function run(){
 				var data = JSON.parse(d);
 				
 				var bal = data["guaranteedBalanceNQT"];
-				var commit = data["committedBalanceNQT"];
+				var commitment = data["committedBalanceNQT"];
 				if(typeof bal == "undefined" || typeof commit == "undefined"){
 					console.error("API Returned unexpected data: " + d);
 					return;
@@ -124,9 +124,9 @@ function run(){
 								}
 								
 								//If available balance (Minus unconfirmed commits) is over the checkLevel then begin the commit process
-								if((bal - commit - unconfirmed) > (commitLevel * 100000000)){
-									commit(bal - commit - unconfirmed, Math.round((bal - commit - unconfirmed) / 100000000 *100 ) /100 );
-								}else if( (bal - commit) > (commitLevel * 100000000) ){
+								if((bal - commitment - unconfirmed) > (commitLevel * 100000000)){
+									commit(bal - commitment - unconfirmed, Math.round((bal - commitment - unconfirmed) / 100000000 *100 ) /100 );
+								}else if( (bal - commitment) > (commitLevel * 100000000) ){
 									let uTransactionsHuman = Math.floor(unconfirmed/100000000);
 									console.log(`Skipping commit as there are unconfirmed commits of ~${uTransactionsHuman} Signa\n`);
 								}
@@ -215,14 +215,14 @@ function sendCommit(toCommit, fee){
 	const req_commit = {
 		hostname: burstNode,
 		port: burstNodePort,
-		path: encodeURI(`/burst?requestType=addCommit&amountNQT=${toCommit}&secretPhrase=${passphrase}&feeNQT=${fee}&deadline=1440`),
+		path: encodeURI(`/burst?requestType=addCommitment&amountNQT=${toCommit}&secretPhrase=${passphrase}&feeNQT=${fee}&deadline=1440`),
 		headers: { 'User-Agent': `CommitBot ${ver}` },
 		method: 'POST'
 	}
 
 	//Build the POST body anyway for future-proofing
 	var postData = JSON.stringify({
-		"requestType": "addCommit",
+		"requestType": "addCommitment",
 		"amountNQT": toCommit,
 		"secretPhrase": passphrase,
 		"feeNQT": fee,
