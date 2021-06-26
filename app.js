@@ -4,14 +4,14 @@ console.log("\nCommitBot loading.\n");
 //==========================================================================================================================================================
 
 
-var account = 'S-XXXX-XXXX-XXXX-XXXXX'; //Burst-Signa RSAddress to monitor.
-var passphrase = 'your twelve words here'; //The passphrase for your Burst-Signa Address in order to broadcast the commits. 
+var account = 'S-XXXX-XXXX-XXXX-XXXXX'; //Signa RSAddress to monitor.
+var passphrase = 'your twelve words here'; //The passphrase for your Signa Address in order to broadcast the commits. 
 
 var commitLevel = 10; //Commit coins when this many are available.
 var commitAmount = 100; //How much of the available balance to commit as a percentage (0 - 100)
 
-var burstNode = '127.0.0.1'; //IP/Domain of a burst node where you have access to the API, (!!Only ever use Burst-Signa Nodes that you personally know and trust with your passphrase!!)
-var burstNodePort = 8125; //The port number the Burst-Node node has its API on, usually 8125
+var burstNode = '127.0.0.1'; //IP/Domain of a signa node where you have access to the API, (!!Only ever use Signa Nodes that you personally know and trust with your passphrase!!)
+var burstNodePort = 8125; //The port number the Signa node has its API on, usually 8125
 var checkSeconds = 900; //Seconds between available balance checks.
 
 
